@@ -3,6 +3,7 @@
 
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
 
 def walk_forward(strategy, initialiser, df_train, df_test, cost_rate=0.0005):
     # Initialise state
@@ -39,6 +40,10 @@ def walk_forward(strategy, initialiser, df_train, df_test, cost_rate=0.0005):
         first_idx = np.where(wealth_seq <= 0)[0][0]
         wealth_seq[first_idx:] = 0.0
 
+    plt.plot(wealth_seq)
+    plt.xlabel("Date")
+    plt.ylabel("Wealth")
+    plt.show()
     return wealth_seq
 
 
@@ -46,7 +51,7 @@ if __name__ == "__main__":
     df = pd.read_csv("df_train.csv")
     df["date"] = pd.to_datetime(df["date"]).dt.date
 
-    train_idx = df["date"] < pd.to_datetime("2012-01-01").date()
+    train_idx = df["date"] < pd.to_datetime("2012-10-18").date()
     df_train = df[train_idx].copy()
     df_test = df[~train_idx].copy()
 
@@ -59,5 +64,6 @@ if __name__ == "__main__":
         df_test,
         cost_rate=0.0005,
     )
-
+    print("wealth sequence:", wealth_seq)
     print("log wealth =", np.log(wealth_seq[-1]) if wealth_seq[-1] > 0 else -np.inf)
+    
