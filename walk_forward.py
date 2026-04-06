@@ -16,10 +16,12 @@ def walk_forward(strategy, initialiser, df_train, df_test, cost_rate=0.0005):
     positions = np.zeros(num_symbols)
     daily_pnl = np.zeros(n_test_dates)
 
+    trades_log = []
     for i, dt in enumerate(test_dates):
         new_data = df_test[df_test["date"] == dt]
 
         trades, state = strategy(new_data, state)
+        trades_log.append(np.sum(np.abs(trades)))
 
         if i == 0:
             price = new_data["close"].to_numpy()
@@ -34,6 +36,7 @@ def walk_forward(strategy, initialiser, df_train, df_test, cost_rate=0.0005):
             positions = positions * (1.0 + r1d) + trades
 
     wealth_seq = 1.0 + np.cumsum(daily_pnl)
+    
 
     # Ensure wealth does not go negative
     if np.any(wealth_seq <= 0):
@@ -44,6 +47,11 @@ def walk_forward(strategy, initialiser, df_train, df_test, cost_rate=0.0005):
     plt.xlabel("Date")
     plt.ylabel("Wealth")
     plt.show()
+    plt.plot(trades_log)
+    plt.xlabel("Date")
+    plt.ylabel("Trades")
+    plt.show()
+    
     return wealth_seq
 
 
