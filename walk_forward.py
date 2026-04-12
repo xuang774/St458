@@ -63,11 +63,11 @@ if __name__ == "__main__":
     df_train = df[train_idx].copy()
     df_test = df[~train_idx].copy()
 
-    import composite_long_short  # your strategy file
+    import v3_runner  # your strategy file
 
     wealth_seq = walk_forward(
-        composite_long_short.trading_algorithm,
-        composite_long_short.initialise_state,
+        v3_runner.trading_algorithm,
+        v3_runner.initialise_state,
         df_train,
         df_test,
         cost_rate=0.0005,
